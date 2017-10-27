@@ -1,6 +1,6 @@
 project(bicla_unit_tests)
 
-include(../build/conanbuildinfo.cmake)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_define_targets()
 include(../config/cmake/ParseAndAddCatchTests.cmake)
 
