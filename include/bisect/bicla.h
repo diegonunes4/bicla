@@ -345,20 +345,20 @@ namespace bisect::bicla
         return detail::option<C, T> { _p, _id, _short_description, _long_description == "" ? _short_description : _long_description };
     }
 
-	inline std::string to_string(const parse_result& r)
-	{
-		std::string out = r.usage_message + '\n';
-		for (const auto& s : r.parameters_description)
-		{
-			out += s + '\n';
-		}
+    inline std::string to_string(const parse_result& r)
+    {
+        std::string out = r.usage_message + '\n';
+        for (const auto& s : r.parameters_description)
+        {
+            out += s + '\n';
+        }
 
-		return out;
-	}
+        return out;
+    }
 
-	inline std::ostream& operator<<(std::ostream& os, const parse_result& r)
-	{
-		os << to_string(r);
-		return os;
-	}
+    inline std::ostream& operator<<(std::ostream& os, const parse_result& r)
+    {
+        os << to_string(r);
+        return os;
+    }
 }
