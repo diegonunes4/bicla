@@ -17,7 +17,6 @@ conan_cmake_run(CONANFILE ../conanfile.txt
                 BUILD missing)
 # -------------------------------------------------------------------------
 
-message(STATUS ****************** ${CMAKE_BINARY_DIR})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_define_targets()
 include(../config/cmake/ParseAndAddCatchTests.cmake)
