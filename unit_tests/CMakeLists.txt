@@ -17,8 +17,7 @@ conan_cmake_run(CONANFILE ../conanfile.txt
                 BUILD missing)
 # -------------------------------------------------------------------------
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_define_targets()
+include(${CMAKE_BINARY_DIR}/unit_tests/conanbuildinfo.cmake)
 include(../config/cmake/ParseAndAddCatchTests.cmake)
 
 
