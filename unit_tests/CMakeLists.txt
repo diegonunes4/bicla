@@ -16,6 +16,19 @@ conan_cmake_run(CONANFILE ../conanfile.txt
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
 # -------------------------------------------------------------------------
+macro(clear_default_msvc_cpp_properties)
+    # Force to always compile with W4
+    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4] " "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    endif()
+    if(CMAKE_CXX_FLAGS MATCHES "/WX- ")
+        string(REGEX REPLACE "/WX-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    endif()
+endmacro()
+# -------------------------------------------------------------------------
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    clear_default_msvc_cpp_properties()
+endif()
 
 include(${CMAKE_BINARY_DIR}/unit_tests/conanbuildinfo.cmake)
 include(../config/cmake/ParseAndAddCatchTests.cmake)
