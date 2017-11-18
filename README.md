@@ -1,17 +1,14 @@
-**BIsect Command Line Arguments parser**
+# **BICLA** - **BI**SECT **C**ommand **L**ine **A**rguments Parser
 
-(c) BISECT UNIPESSOAL LDA
+## Build
 
-
-# Build
-
-## Setup conan remotes
+### Setup conan remotes
 
 ```
 > conan remote add bintray https://api.bintray.com/conan/uilianries/conan
 ```
 
-## Windows
+### Windows
 ```
 > md build
 > cd build
