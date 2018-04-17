@@ -159,7 +159,7 @@ namespace bisect::bicla
             {
                 return done;
             }
-        };
+        }
 
         template<typename C, typename T>
         bool do_parse(svector& args, C& config,
@@ -209,7 +209,7 @@ namespace bisect::bicla
             {
                 return done;
             }
-        };
+        }
 
         template<typename C, typename T>
         bool do_parse(svector& args, C& /*config*/,

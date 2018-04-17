@@ -1,5 +1,5 @@
 [requires]
-Catch/1.9.6@uilianries/stable
+Catch/1.9.6@bincrafters/stable
 
 [generators]
 cmake
