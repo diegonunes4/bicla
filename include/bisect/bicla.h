@@ -161,6 +161,7 @@ namespace bisect::bicla
             }
         }
 
+        // An option that has an argument of type T
         template<typename C, typename T>
         bool do_parse(svector& args, C& config,
             const detail::option<C, T>& option)
@@ -209,6 +210,38 @@ namespace bisect::bicla
             {
                 return done;
             }
+        }
+
+        // A boolean option, with no argument
+        template<typename C>
+        bool do_parse(svector& args, C& config,
+            const detail::option<C, bool>& option)
+        {
+            bool done = false;
+
+            const auto option_marker = std::string("-") + option.id;
+            const auto save_args = args;
+            args.clear();
+
+            for (const auto& arg : save_args)
+            {
+                if (done)
+                {
+                    args.push_back(arg);
+                    continue;
+                }
+
+                if (arg == option_marker)
+                {
+                    done = true;
+                    assign(arg, (config.*(option.p)));
+                    continue;
+                }
+
+                args.push_back(arg);
+            }
+
+            return true;
         }
 
         template<typename C, typename T>

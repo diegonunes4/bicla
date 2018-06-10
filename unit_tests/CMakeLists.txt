@@ -4,17 +4,21 @@ project(bicla_unit_tests)
 # conan
 
 # Download automatically, you can also just copy the conan.cmake file
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
-                 "${CMAKE_BINARY_DIR}/conan.cmake")
+                 "${CMAKE_CURRENT_BINARY_DIR}/conan.cmake")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
+include(${CMAKE_CURRENT_BINARY_DIR}/conan.cmake)
 conan_cmake_run(CONANFILE ../conanfile.txt
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
+
+if(WIN32)
+    include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo_multi.cmake)
+endif()
+
 # -------------------------------------------------------------------------
 macro(clear_default_msvc_cpp_properties)
     # Force to always compile with W4
@@ -41,7 +45,7 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${bicla_unit_tests_source_files})
 
 target_link_libraries(bicla_unit_tests
     bicla
-	CONAN_PKG::Catch
+	CONAN_PKG::catch2
 )
 
 set_target_properties(bicla_unit_tests PROPERTIES

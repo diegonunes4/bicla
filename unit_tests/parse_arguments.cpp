@@ -11,7 +11,7 @@ using namespace bisect::bicla;
 
 SCENARIO("argument parsing")
 {
-    GIVEN("a config with three string arguments")
+    GIVEN("a config with 3 string arguments")
     {
         struct config
         {
@@ -20,7 +20,7 @@ SCENARIO("argument parsing")
             std::string s3;
         };
 
-        WHEN("we provide three arguments")
+        WHEN("we provide 3 arguments")
         {
             const std::array<const char*, 4> argv = { "program name", "string 1", "string 2", "string 3" };
 
@@ -39,7 +39,7 @@ SCENARIO("argument parsing")
             }
         }
 
-        WHEN("we only provide two arguments")
+        WHEN("we only provide 2 arguments")
         {
             const std::array<const char*, 3> argv = { "program name", "string 1", "string 2" };
 
@@ -74,7 +74,7 @@ SCENARIO("argument parsing")
         }
     }
 
-    GIVEN("a config with three string arguments, one of which is optional")
+    GIVEN("a config with 3 string arguments, 1 of which is optional")
     {
         struct config
         {
@@ -83,7 +83,7 @@ SCENARIO("argument parsing")
             std::optional<std::string> s3;
         };
 
-        WHEN("we provide three arguments")
+        WHEN("we provide 3 arguments")
         {
             const std::array<const char*, 4> argv = { "program name", "string 1", "string 2", "string 3" };
 
@@ -102,11 +102,11 @@ SCENARIO("argument parsing")
             }
         }
 
-        WHEN("we provide only two arguments")
+        WHEN("we provide only 2 arguments")
         {
             const std::array<const char*, 3> argv = { "program name", "string 1", "string 2" };
 
-            THEN("the first two are correctly parsed and the last one is not set")
+            THEN("the first 2 are correctly parsed and the last one is not set")
             {
                 const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
                     argument(&config::s1, "s 1"),
@@ -125,7 +125,7 @@ SCENARIO("argument parsing")
 
 SCENARIO("heterogenous argument parsing 2")
 {
-    GIVEN("a config with four arguments, two of which are optional")
+    GIVEN("a config with four arguments, 2 of which are optional")
     {
         struct config
         {
@@ -135,11 +135,11 @@ SCENARIO("heterogenous argument parsing 2")
             std::optional<int> i2;
         };
 
-        WHEN("we provide three arguments")
+        WHEN("we provide 3 arguments")
         {
             const std::array<const char*, 4> argv = { "program name", "string 1", "2", "string 3" };
 
-            THEN("the first three are correctly parsed and the last one is not set")
+            THEN("the first 3 are correctly parsed and the last 1 is not set")
             {
                 const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
                     argument(&config::s1, "s 1"),
@@ -180,7 +180,7 @@ SCENARIO("heterogenous argument parsing 2")
 
 SCENARIO("messages")
 {
-    GIVEN("a config with three string arguments")
+    GIVEN("a config with 3 string arguments")
     {
         struct config
         {
@@ -220,7 +220,7 @@ SCENARIO("messages")
         }
     }
 
-    GIVEN("a config with three arguments, two of which are optional")
+    GIVEN("a config with 3 arguments, 2 of which are optional")
     {
         struct config
         {
@@ -262,7 +262,7 @@ SCENARIO("messages")
 
 SCENARIO("option parsing")
 {
-    GIVEN("a config with one string option")
+    GIVEN("a config with 1 string option")
     {
         struct config
         {
@@ -300,7 +300,7 @@ SCENARIO("option parsing")
         }
     }
 
-    GIVEN("a config with three options")
+    GIVEN("a config with 3 options")
     {
         struct config
         {
@@ -328,11 +328,92 @@ SCENARIO("option parsing")
             }
         }
     }
+
+    GIVEN("a config with 1 boolean option")
+    {
+        struct config
+        {
+            bool b1 = false;
+        };
+
+        WHEN("we provide the flag")
+        {
+            const std::array<const char*, 2> argv = { "program name", "-b" };
+
+            THEN("it is set")
+            {
+                const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
+                    option(&config::b1, "b", "a bool option")
+                );
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b1);
+            }
+        }
+
+        WHEN("we do not provide the flag")
+        {
+            const std::array<const char*, 1> argv = { "program name" };
+
+            THEN("it is not set")
+            {
+                const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
+                    option(&config::b1, "b", "a bool option")
+                );
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b1 == false);
+            }
+        }
+    }
+
+    GIVEN("a config with 2 boolean options")
+    {
+        struct config
+        {
+            bool b = false;
+            bool c = false;
+        };
+
+        WHEN("we provide the flags in one order")
+        {
+            const std::array<const char*, 3> argv = { "program name", "-b", "-c" };
+
+            THEN("both are set")
+            {
+                const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
+                    option(&config::b, "b", "a bool option"),
+                    option(&config::c, "c", "another bool option")
+                );
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b);
+                REQUIRE(config.b);
+            }
+        }
+
+        WHEN("we provide the flags in the reverse order")
+        {
+            const std::array<const char*, 3> argv = { "program name", "-c", "-b" };
+
+            THEN("both are set")
+            {
+                const auto[parse_result, config] = parse(int(static_cast<int>(argv.size())), argv.data(),
+                    option(&config::b, "b", "a bool option"),
+                    option(&config::c, "c", "another bool option")
+                );
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b);
+                REQUIRE(config.b);
+            }
+        }
+    }
 }
 
 SCENARIO("option and argument parsing")
 {
-    GIVEN("a config with three options")
+    GIVEN("a config with 1 option and 2 arguments")
     {
         struct config
         {
