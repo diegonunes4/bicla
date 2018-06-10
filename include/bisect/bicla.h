@@ -234,7 +234,7 @@ namespace bisect::bicla
                 if (arg == option_marker)
                 {
                     done = true;
-                    assign(arg, (config.*(option.p)));
+                    config.*(option.p) = true;
                     continue;
                 }
 
