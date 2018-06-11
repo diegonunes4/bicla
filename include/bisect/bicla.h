@@ -67,6 +67,17 @@ namespace bisect::bicla
             return true;
         }
 
+        template<typename T>
+        constexpr bool is_boolean(T)
+        {
+            return false;
+        }
+
+        constexpr bool is_boolean(bool)
+        {
+            return true;
+        }
+
         template<int N, typename... Ts> using nth_type_of =
             typename std::tuple_element<N, std::tuple<Ts...>>::type;
 
@@ -280,7 +291,7 @@ namespace bisect::bicla
         template<typename T>
         std::string build_usage_message(const T& parameter)
         {
-            if (is_optional(typename T::value_type{}))
+            if (is_optional(typename T::value_type{}) || is_boolean(typename T::value_type{}))
             {
                 return "[<" + parameter.short_description + ">]";
             }
@@ -357,7 +368,7 @@ namespace bisect::bicla
             parse_ok = false;
         }
 
-        const auto usage_message = parse_ok ? "" : detail::build_usage_message(options...);
+        const auto usage_message = detail::build_usage_message(options...);
         const auto parameters_description = detail::build_parameters_description(options...);
         return 
         { 
