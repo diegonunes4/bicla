@@ -107,6 +107,22 @@ namespace bisect::bicla
         }
 
         template<typename T, typename U>
+        void assign(const T& s, std::vector<U>& target)
+        {
+            if constexpr(std::is_assignable_v<U, T>)
+            {
+                target.push_back(s);
+            }
+            else
+            {
+                std::istringstream is(s);
+                U n;
+                is >> n;
+                target.push_back(n);
+            }
+        }
+
+        template<typename T, typename U>
         void assign(const T& s, U& target)
         {
             if constexpr(std::is_assignable_v<U, T>)
@@ -186,12 +202,6 @@ namespace bisect::bicla
 
             for (const auto& arg : save_args)
             {
-                if (done)
-                {
-                    args.push_back(arg);
-                    continue;
-                }
-
                 if (arg == option_marker)
                 {
                     in_option = true;
