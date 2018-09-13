@@ -62,6 +62,12 @@ namespace bisect::bicla
         }
 
         template<typename T>
+        constexpr bool is_optional(std::vector<T>)
+        {
+            return true;
+        }
+
+        template<typename T>
         constexpr bool is_optional(std::optional<T>)
         {
             return true;
