@@ -15,8 +15,12 @@ conan_cmake_run(CONANFILE ../conanfile.txt
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
 
-if(WIN32)
+get_cmake_property(is_multi GENERATOR_IS_MULTI_CONFIG)
+
+if(is_multi)
     include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo_multi.cmake)
+else()
+    include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 endif()
 
 # -------------------------------------------------------------------------
