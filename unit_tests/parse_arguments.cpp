@@ -460,4 +460,137 @@ SCENARIO("option and argument parsing")
             }
         }
     }
+
+    GIVEN("a config with multiple options, including optionals and a vector")
+    {
+        struct config
+        {
+            bool b = false;
+            std::optional<bool> v = false;
+            std::optional<std::string> f;
+            std::optional<int> n;
+            std::vector<std::string> e;
+        };
+
+        const auto do_parse = [](auto argv) {
+            return parse(int(static_cast<int>(argv.size())), argv.data(),
+                option(&config::b, "b", "b", "b"),
+                option(&config::f, "f", "f", "f"),
+                option(&config::n, "n", "n", "n"),
+                option(&config::v, "v", "v", "v"),
+                option(&config::e, "e", "e", "e")
+            );
+        };
+
+        WHEN("we provide no arguments")
+        {
+            const std::array<const char*, 1> argv = { "program name",
+            };
+
+            THEN("parsing is correct")
+            {
+                const auto[parse_result, config] = do_parse(argv);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b == false);
+                REQUIRE(!config.f.has_value());
+                REQUIRE(!config.n.has_value());
+                REQUIRE(config.v.has_value());
+                REQUIRE(config.v.value() == false);
+                REQUIRE(config.e.empty());
+            }
+        }
+
+        WHEN("we provide the bool option")
+        {
+            const std::array<const char*, 2> argv = { "program name",
+                "-b"
+            };
+
+            THEN("parsing is correct")
+            {
+                const auto[parse_result, config] = do_parse(argv);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b == true);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(!config.f.has_value());
+                REQUIRE(!config.n.has_value());
+                REQUIRE(config.v.has_value());
+                REQUIRE(config.v.value() == false);
+                REQUIRE(config.e.empty());
+            }
+        }
+
+        //WHEN("we provide the argument to the bool option")
+        //{
+        //    const std::array<const char*, 3> argv = { "program name",
+        //        "-b", "1"
+        //    };
+
+        //    THEN("parsing is correct")
+        //    {
+        //        const auto[parse_result, config] = do_parse(argv);
+
+        //        REQUIRE(parse_result == true);
+        //        REQUIRE(config.b == true);
+
+        //        REQUIRE(parse_result == true);
+        //        REQUIRE(!config.f.has_value());
+        //        REQUIRE(!config.n.has_value());
+        //        REQUIRE(config.v.has_value());
+        //        REQUIRE(config.v.value() == false);
+        //        REQUIRE(config.e.empty());
+        //    }
+        //}
+
+        WHEN("we provide the integer option")
+        {
+            const std::array<const char*, 3> argv = { "program name",
+                "-n", "10"
+            };
+
+            THEN("parsing is correct")
+            {
+                const auto[parse_result, config] = do_parse(argv);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.n.has_value());
+                REQUIRE(config.n.value() == 10);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b == false);
+                REQUIRE(!config.f.has_value());
+                REQUIRE(config.v.has_value());
+                REQUIRE(config.v.value() == false);
+                REQUIRE(config.e.empty());
+            }
+        }
+
+        WHEN("we provide the integer and string options")
+        {
+            const std::array<const char*, 5> argv = { "program name",
+                "-f", "abcd",
+                "-n", "10"
+            };
+
+            THEN("parsing is correct")
+            {
+                const auto[parse_result, config] = do_parse(argv);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.f.has_value());
+                REQUIRE(config.f.value() == "abcd");
+                REQUIRE(config.n.has_value());
+                REQUIRE(config.n.value() == 10);
+
+                REQUIRE(parse_result == true);
+                REQUIRE(config.b == false);
+                REQUIRE(config.v.has_value());
+                REQUIRE(config.v.value() == false);
+                REQUIRE(config.e.empty());
+            }
+        }
+    }
 }
