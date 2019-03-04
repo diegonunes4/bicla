@@ -47,7 +47,7 @@
     },
     {
       "name": "Linux-Debug",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "remoteMachineName": "${defaultRemoteMachineName}",
       "configurationType": "Debug",
       "remoteCMakeListsRoot": "/var/tmp/src/${workspaceHash}/${name}",
@@ -67,7 +67,7 @@
     },
     {
       "name": "Linux-Release",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "remoteMachineName": "${defaultRemoteMachineName}",
       "configurationType": "Release",
       "remoteCMakeListsRoot": "/var/tmp/src/${workspaceHash}/${name}",

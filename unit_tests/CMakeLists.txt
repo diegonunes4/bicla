@@ -49,7 +49,7 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${bicla_unit_tests_source_files})
 
 target_link_libraries(bicla_unit_tests
     bicla
-	CONAN_PKG::catch2
+    CONAN_PKG::catch2
 )
 
 set_target_properties(bicla_unit_tests PROPERTIES
@@ -58,9 +58,11 @@ set_target_properties(bicla_unit_tests PROPERTIES
     CXX_EXTENSIONS NO
     )
 
-target_compile_options(bicla_unit_tests PRIVATE 
-    /W4 /WX /std:c++17 /permissive-
-)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_compile_options(bicla_unit_tests PRIVATE 
+        /W4 /WX /std:c++17 /permissive-
+    )
+endif()
 
 enable_testing()
 ParseAndAddCatchTests(${PROJECT_NAME})
