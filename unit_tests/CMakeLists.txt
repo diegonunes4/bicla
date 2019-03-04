@@ -62,6 +62,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(bicla_unit_tests PRIVATE 
         /W4 /WX /std:c++17 /permissive-
     )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GCC")
+    target_compile_options(bicla_unit_tests PRIVATE 
+        -Werror
+    )
 endif()
 
 enable_testing()
