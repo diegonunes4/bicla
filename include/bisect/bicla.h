@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <optional>
-#include <assert.h>
+#include <cassert>
 
 //------------------------------------------------------------------------------
 
@@ -304,24 +304,45 @@ namespace bisect::bicla
 
         //---------------------------------------------------------------------
 
-        template<typename T>
-        std::string build_usage_message(const T& parameter)
+        template<typename C, typename T>
+        std::string get_full_short_description(const T& parameter)
         {
-            if (is_optional(typename T::value_type{}) || is_boolean(typename T::value_type{}))
-            {
-                return "[<" + parameter.short_description + ">]";
-            }
-            else
+            if constexpr(is_argument<C, T>::value)
             {
                 return "<" + parameter.short_description + ">";
             }
+            else if constexpr(is_option<C, T>::value)
+            {
+                return "-" + parameter.id + " <" + parameter.short_description + ">";
+            }
+            else
+            {
+                assert(false);
+                return "";
+            }
+            
         }
 
-        template<typename T, typename... Ts>
+        template<typename C, typename T>
+        std::string build_usage_message(const T& parameter)
+        {
+            const auto d = get_full_short_description<C>(parameter);
+
+            if (is_optional(typename T::value_type{}) || is_boolean(typename T::value_type{}))
+            {
+                return "[" + d + "]";
+            }
+            else
+            {
+                return d;
+            }
+        }
+
+        template<typename C, typename T, typename... Ts>
         std::string build_usage_message(const T& parameter, const Ts&... other)
         {
             // TODO: fold expressions would be nice, if VS supported them
-            return build_usage_message(parameter) + " " + build_usage_message(other...);
+            return build_usage_message<C>(parameter) + " " + build_usage_message<C>(other...);
         }
 
         //---------------------------------------------------------------------
@@ -376,7 +397,8 @@ namespace bisect::bicla
         // Skip program name
         std::vector<std::string> arguments(argv + 1, argv + argc);
 
-        auto config = typename detail::get_config_type<Ts...>::type{};
+        using ConfigType = typename detail::get_config_type<Ts...>::type;
+        auto config = ConfigType{};
         auto parse_ok = detail::do_parse(arguments, config, options...);
 
         if (!arguments.empty())
@@ -384,7 +406,7 @@ namespace bisect::bicla
             parse_ok = false;
         }
 
-        const auto usage_message = detail::build_usage_message(options...);
+        const auto usage_message = detail::build_usage_message<ConfigType>(options...);
         const auto parameters_description = detail::build_parameters_description(options...);
         return 
         { 
