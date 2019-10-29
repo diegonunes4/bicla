@@ -49,7 +49,7 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${bicla_unit_tests_source_files})
 
 target_link_libraries(bicla_unit_tests
     bicla
-    CONAN_PKG::catch2
+    CONAN_PKG::Catch2
 )
 
 set_target_properties(bicla_unit_tests PROPERTIES

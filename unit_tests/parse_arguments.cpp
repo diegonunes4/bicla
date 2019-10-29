@@ -3,7 +3,7 @@
 #include <array>
 #pragma warning(push)
 #pragma warning(disable: 4996)
-#include "catch.hpp"
+#include "catch2/catch.hpp"
 #pragma warning(pop)
 using namespace bisect::bicla;
 
